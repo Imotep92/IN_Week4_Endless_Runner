@@ -12,11 +12,25 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] bool isOnGround = true;
 
+    public ParticleSystem dirtParticle;
+
+    public ParticleSystem explosionParticle;
+
+    public AudioClip jumpSound;
+
+    public AudioClip crashSound;
+
+    private AudioSource playerAudio;
+
+
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         playerRB = GetComponent<Rigidbody>();
         Physics.gravity *= gravityModifier;
+        playerAudio = GetComponent<AudioSource>();
 
     }
 
@@ -27,6 +41,8 @@ public class PlayerController : MonoBehaviour
         {
             playerRB.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             isOnGround = false;
+            dirtParticle.Stop();
+            playerAudio.PlayOneShot(jumpSound, 1.0f);
         }
 
     }
@@ -36,9 +52,13 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isOnGround = true;
+            dirtParticle.Play();
         }
         else if (collision.gameObject.CompareTag("Obstacle"))
         {
+            playerAudio.PlayOneShot(crashSound, 1.0f);
+            dirtParticle.Stop();
+            explosionParticle.Play();
             gameOver = true;
             Debug.Log("Game Over");
         }
