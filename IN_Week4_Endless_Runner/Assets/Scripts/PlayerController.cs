@@ -1,28 +1,44 @@
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+using UnityEngine.SceneManagement;
+
 
 public class PlayerController : MonoBehaviour
 {
+    #region player physics    
 
+    //Player speed and movement variables
     private Rigidbody playerRB;
-
     public float jumpForce;
     public float gravityModifier;
 
-    public bool gameOver = false;
+    #endregion player physics
 
+    #region game rules
+
+    public bool isDead = false; //trigger gameOver UI in Game Manager script
     [SerializeField] bool isOnGround = true;
 
+    #endregion game rules
+
+    #region sfx
+
     public ParticleSystem dirtParticle;
-
     public ParticleSystem explosionParticle;
+    private Animator anim;
 
-    public AudioClip jumpSound;
+    #endregion sfx
 
-    public AudioClip crashSound;
+    #region Audio
 
-    private AudioSource playerAudio;
+    public AudioClip jumpSound;  //player jump sound
 
+    public AudioClip crashSound;  //player hitting obstacle sound
 
+    private AudioSource playerAudio; //Game music
+
+    #endregion Audio
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -31,6 +47,7 @@ public class PlayerController : MonoBehaviour
         playerRB = GetComponent<Rigidbody>();
         Physics.gravity *= gravityModifier;
         playerAudio = GetComponent<AudioSource>();
+        anim = GetComponent<Animator>();
 
     }
 
@@ -44,6 +61,13 @@ public class PlayerController : MonoBehaviour
             dirtParticle.Stop();
             playerAudio.PlayOneShot(jumpSound, 1.0f);
         }
+        
+         /*
+        if (player box collider ==!isOnGround)
+       {
+           anim.SetBool("Wolf_Run_Static", !anim.GetBool("Wolf_Run_Static")); // pause running animation
+       }
+       */
 
     }
 
@@ -54,15 +78,17 @@ public class PlayerController : MonoBehaviour
             isOnGround = true;
             dirtParticle.Play();
         }
+
+
         else if (collision.gameObject.CompareTag("Obstacle"))
         {
             playerAudio.PlayOneShot(crashSound, 1.0f);
             dirtParticle.Stop();
             explosionParticle.Play();
-            gameOver = true;
-            Debug.Log("Game Over");
+            isDead = true;
+            Debug.Log("Game Over"); // gameover ui?
         }
-        
-        
+
+
     }
 }
