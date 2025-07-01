@@ -390,7 +390,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jumpForce: 700
   gravityModifier: 1.58
-  gameOver: 0
+  isDead: 0
   isOnGround: 1
   dirtParticle: {fileID: 6658351382027159631}
   explosionParticle: {fileID: 5731466218365413164}
